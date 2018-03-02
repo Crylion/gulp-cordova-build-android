@@ -29,7 +29,8 @@ module.exports = function (options) {
 		}).then(function (exists) {
 			if (!exists) {
 				// Add the android platform if it does not exist
-				return cordova.platforms('add', 'android' + (options.version ? ('@' + options.version) : ''));
+				return cordova.platforms('add', 'android' + (options.version ? ('@' + options.version) : ''),
+							 { fetch: true });
 			}
 		}).then(function () {
 			if (sign) {
@@ -52,23 +53,23 @@ module.exports = function (options) {
 				fs.writeFileSync(path.join(androidPath, 'release-signing.properties'), data.join(os.EOL));
 			}
 		}).then(function () {
-			var options = [];
+			var options = {};
 
 			if (release) {
 				// If the user wants to build for release, add the option
-				options.push('--release');
+				options.release = true;
 			}
-
+			
 			if (buildMethod === 'ant') {
-				options.push('--ant');
-			} else {
-				options.push('--gradle');
-			}
+				options.ant = true;
+			} 
+			// the else case is obsolete now, because the correct option would be 'studio = true'
+			// which we don't actually need to set, because cordova correctly detects that itself
 
 			// Build the platform
 			return cordova.build({platforms: ['android'], options: options});
 		}).then(function () {
-			var apkOutputPath = buildMethod === 'ant' ? 'bin' : 'build/outputs/apk';
+			var apkOutputPath = buildMethod === 'ant' ? 'bin' : 'app/build/outputs/apk';
 			var base = path.join(androidPath, apkOutputPath);
 			var cwd = process.env.PWD;
 
