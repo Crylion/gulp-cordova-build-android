@@ -18,7 +18,7 @@ module.exports = function (options) {
 		cb();
 	}, function (cb) {
 		var self = this;
-		var androidPath = path.join(cordovaLib.findProjectRoot(), 'platforms', 'android');
+		var androidPath = path.join(cordova.findProjectRoot(), 'platforms', 'android');
 		var sign = options.storeFile && options.keyAlias;
 		var release = options.release || sign;
 		var buildMethod = options.buildMethod || process.env.ANDROID_BUILD;
