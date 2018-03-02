@@ -5,8 +5,7 @@ var os = require('os');
 var through = require('through2');
 var gutil = require('gulp-util');
 var Q = require('q');
-var cordovaLib = require('cordova-lib').cordova;
-var cordova = cordovaLib.raw;
+var cordova = require('cordova-lib').cordova;
 
 // export the module
 module.exports = function (options) {
