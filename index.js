@@ -68,7 +68,7 @@ module.exports = function (options) {
 			// Build the platform
 			return cordova.build({platforms: ['android'], options: options});
 		}).then(function () {
-			var apkOutputPath = buildMethod === 'ant' ? 'bin' : 'app/build/outputs/apk';
+			var apkOutputPath = buildMethod === 'ant' ? 'bin' : (release ? 'app/build/outputs/apk/release' : 'app/build/outputs/apk/debug');
 			var base = path.join(androidPath, apkOutputPath);
 			var cwd = process.env.PWD;
 
