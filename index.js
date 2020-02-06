@@ -21,6 +21,7 @@ module.exports = function (options) {
 		const release = options.release || sign;
 		const buildMethod = options.buildMethod || process.env.ANDROID_BUILD;
 		const bundle = options.bundle !== undefined ? options.bundle : false;
+		const argv = options.argv !== undefined ? options.argv : [];
 
 		const exists = fs.existsSync(androidPath);
 
@@ -56,23 +57,22 @@ module.exports = function (options) {
 				}
 			})
 			.then(() => {
-				const buildArguments = [];
+				const parsedOptions = {};
 
 				if (release) {
-					// If the user wants to build for release, add the option
-					buildArguments.push('--release');
+					parsedOptions.release = true;
 				}
 
 				if (buildMethod === 'ant') {
-					buildArguments.push('--ant');
+					argv.push('--ant');
 				}
 
 				if (bundle) {
-					buildArguments.push('--packageType=bundle');
+					argv.push('--packageType=bundle');
 				}
 
 				// Build the platform
-				return cordova.build({platforms: ['android'], options: {argv: buildArguments}});
+				return cordova.build({platforms: ['android'], options: {...parsedOptions, argv: argv}});
 			})
 			.then(() => {
 				const apkOutputPath = buildMethod === 'ant' ? 'bin'
