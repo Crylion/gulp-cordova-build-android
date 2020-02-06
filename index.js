@@ -56,32 +56,31 @@ module.exports = function (options) {
 				}
 			})
 			.then(() => {
-				const options = [];
+				const buildArguments = [];
 
 				if (release) {
 					// If the user wants to build for release, add the option
-					options.push('--release');
+					buildArguments.push('--release');
 				}
 
 				if (buildMethod === 'ant') {
-					options.push('--ant');
-				} else {
-					options.push('--gradle');
+					buildArguments.push('--ant');
 				}
 
 				if (bundle) {
-					options.push('--packageType=bundle');
+					buildArguments.push('--packageType=bundle');
 				}
 
 				// Build the platform
-				return cordova.build({platforms: ['android'], options});
+				return cordova.build({platforms: ['android'], options: {argv: buildArguments}});
 			})
 			.then(() => {
-				const apkOutputPath = buildMethod === 'ant' ? 'bin' : 'app/build/outputs/apk';
+				const apkOutputPath = buildMethod === 'ant' ? 'bin'
+				: bundle ? 'app/build/outputs/bundle' : 'app/build/outputs/apk';
 				const base = path.join(androidPath, apkOutputPath);
 				const cwd = process.env.PWD;
 
-				const files = glob.sync('**/*.apk', {cwd: base});
+				const files = glob.sync(bundle ? '**/*.aab' : '**/*.apk', {cwd: base});
 
 				for (const file of files) {
 					const filePath = path.join(base, file);
