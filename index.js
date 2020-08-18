@@ -33,38 +33,28 @@ module.exports = function (options) {
 				}
 			})
 			.then(() => {
-				if (sign) {
-					const data = [];
-
-					// Add all the options related to key signing to the array to be added to 'release-signing.properties'
-					data.push('storeFile=' + options.storeFile);
-					data.push('keyAlias=' + options.keyAlias);
-
-					if (options.storePassword) {
-						data.push('storePassword=' + options.storePassword);
-					}
-
-					if (options.keyPassword) {
-						data.push('keyPassword=' + options.keyPassword);
-					}
-
-					if (options.storeType) {
-						data.push('storeType=' + options.storeType);
-					}
-
-					// Write the release-signing.properties file
-					fs.writeFileSync(path.join(androidPath, 'release-signing.properties'), data.join(os.EOL));
-				}
-			})
-			.then(() => {
 				const parsedOptions = {};
 
 				if (release) {
 					parsedOptions.release = true;
 				}
 
-				if (buildMethod === 'ant') {
-					argv.push('--ant');
+				if (sign) {
+					if (options.storeFile) {
+						argv.push('--keystore=' + options.storeFile);
+					}
+
+					if (options.storePassword) {
+						argv.push('--storePassword=' + options.storePassword);
+					}
+
+					if (options.keyAlias) {
+						argv.push('--alias=' + options.keyAlias);
+					}
+
+					if (options.keyPassword) {
+						argv.push('--password=' + options.keyPassword);
+					}
 				}
 
 				if (bundle) {
